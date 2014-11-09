@@ -12,6 +12,6 @@ typedef struct world {
 
 world* create_world();
 void update_world(input* in, world* game_world);
-void draw_world(world* game_world, char** out);
+void draw_world(world* game_world, char* out);
 
 #endif

@@ -26,13 +26,13 @@ void update_world(input* in, world* game_world) {
   }
 }
 
-void draw_world(world* game_world, char** out) {
+void draw_world(world* game_world, char* out) {
   for (int i = 0; i < game_world->height; i++) {
     for (int j = 0; j < game_world->width; j++) {
-      if (j == 4 && i == 4) {
-        out[i][j] = '0';
+      if (equals_pos(j, i, game_world->player_pos)) {
+        out[i * 8 + j] = '0';
       } else {
-        out[i][j] = '1';
+        out[i * 8 + j] = '1';
       }
     }
   }
