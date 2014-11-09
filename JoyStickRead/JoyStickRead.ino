@@ -1,58 +1,49 @@
- int ledPin = 13;
- int joyPinX = 0;                 // slider variable connecetd to analog pin 0
- int joyPinY = 1;                 // slider variable connecetd to analog pin 1
- int valueX = 0;                  // variable to read the value from the analog pin 0
- int valueY = 0;                  // variable to read the value from the analog pin 1
+#include "world.h"
+#include "input.h"
 
- void setup() {
-  pinMode(ledPin, OUTPUT);              
+static struct world* game_world;
+static struct input* in;
+static char** screen;
+
+int ledPin = 13;
+int joyPinX = 0;                 // slider variable connecetd to analog pin 0
+int joyPinY = 1;                 // slider variable connecetd to analog pin 1
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
   Serial.begin(9600);
- }
+  
+  in = create_input();
+  game_world = create_world();
+  screen = (char**)malloc(8 * 8);
+}
 
-
- void loop() {
-  // reads the value of the variable resistor 
-  valueX = analogRead(joyPinX);   
+void loop() {
+  // reads the value of the variable resistor
+  in->joyX = analogRead(joyPinX);
+  
   // this small pause is needed between reading
   // analog pins, otherwise we get the same value twice
-  delay(100);             
-  // reads the value of the variable resistor 
-  valueY = analogRead(joyPinY);   
-
-  digitalWrite(ledPin, HIGH);           
-  delay(valueX);
-  digitalWrite(ledPin, LOW);
-  delay(valueY);
-
-  Serial.print(valueX);
-  Serial.print(" , ");
-  Serial.println(valueY);
+  delay(1);
   
-  if (valueX > 700 and valueY < 400) {
-    Serial.println("upper left!");
-  }
-  else if (valueX > 700 and valueY < 700) {
-    Serial.println("up!");
-  }
-  else if (valueX > 700 and valueY >= 700) {
-    Serial.println("upper right!");
-  }
-  else if (valueX > 400 and valueY < 400) {
-   Serial.println("left!");
-  }
-  else if (valueX < 400 and valueY < 400) {
-   Serial.println("lower left!");
-  }
-  else if (valueX < 400 and valueY > 700) {
-    Serial.println("lower right!");
-  }
-  else if (valueX < 700 and valueY > 700) {
-    Serial.println("right!");
-  }
-  else if (valueX < 400 and valueY > 400) {
-    Serial.println("down!");
-  }
-  else {
-    Serial.println("no movement!");
-  }
- }
+  // reads the value of the variable resistor
+  in->joyY = analogRead(joyPinY);
+  
+  delay(1000);
+  Serial.println("wtf");
+//  update_world(in, game_world);
+  draw_world(game_world, screen);
+  Serial.println(screen[0]);
+//
+//  for (int i = 0; i < 8; i++) {
+//    for (int j = 0; j < 8; j++) {
+//      Serial.print(screen[i][j]);
+//      if (j != 7) {
+//        Serial.print(", ");
+//      }
+//    }
+//    Serial.println("x");
+//  }
+  
+  delay(1000);
+}
