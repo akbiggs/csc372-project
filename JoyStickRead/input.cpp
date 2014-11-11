@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <ncurses.h>
 #include "input.h"
 
 input* create_input(void) {
@@ -9,19 +10,18 @@ input* create_input(void) {
 }
 
 int moving_left(input* in) {
-  return in->joyX < 400;
+  return in->joyX <= LOWER_THRESHOLD;
 }
 
 int moving_right(input* in) {
-  return in->joyX > 700;
+  return in->joyX >= UPPER_THRESHOLD;
 }
 
 int moving_up(input* in) {
-  return in->joyY > 700;
+  return in->joyY >= UPPER_THRESHOLD;
 }
 
 int moving_down(input* in) {
-  return in->joyY < 400;
+  return in->joyY <= LOWER_THRESHOLD;
 }
-
 
