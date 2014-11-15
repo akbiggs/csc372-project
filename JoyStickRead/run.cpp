@@ -25,7 +25,11 @@ void loop() {
   timeout(game_world->game_player->move_delay);
   switch (getch()) {
     case '\n':
-        return;
+        addstr("Restarting this stuff\n");
+        if (!game_world->game_player->alive) {
+            reset_world(game_world);
+        }
+        break;
     case 'w':
         in->joyY = UPPER_THRESHOLD;
         break;
@@ -53,6 +57,10 @@ void loop() {
       }
     }
     addch('\n');
+  }
+
+  if (!game_world->game_player->alive) {
+    addstr("The player is dead.\n");
   }
 }
 

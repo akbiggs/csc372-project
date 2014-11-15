@@ -2,17 +2,31 @@
 
 #include "player.h"
 
-player* create_player(point* start_pos) {
-    player* result = (player*)malloc(sizeof(player));
+player* create_player(int start_x, int start_y) {
+  player* result = (player*)malloc(sizeof(player));
 
-    result->pos = start_pos;
-    result->dir = create_point(0, 0);
-    result->move_delay = START_MOVE_DELAY;
+  // x and y values are set when player resets to avoid
+  // repeated game logic
+  result->pos = create_point(0, 0);
+  result->dir = create_point(0, 0);
 
-    return result;
+  reset_player(start_x, start_y, result);
+
+  return result;
 }
 
-void update_player(input* in, player* game_player) {
+void reset_player(int start_x, int start_y, player* game_player) {
+  set_point(start_x, start_y, game_player->pos);
+  set_point(0, 0, game_player->dir);
+
+  game_player->move_delay = START_MOVE_DELAY;
+  game_player->alive = 1;
+}
+
+void update_player(input* in, point* walls, int num_walls, player* game_player) {
+  if (!game_player->alive)
+    return;
+
   if (moving_left(in)) {
     set_point(-1, 0, game_player->dir);
   }
@@ -26,7 +40,12 @@ void update_player(input* in, player* game_player) {
     set_point(0, 1, game_player->dir);
   }
 
-  add_point(game_player->pos, game_player->dir);
+  add_point(game_player->pos, *game_player->dir);
+
+  point* new_pos = game_player->pos;
+  if (contains_point(new_pos->x, new_pos->y, walls, num_walls)) {
+    game_player->alive = 0;
+  }
 }
 
 void draw_player(player* game_player, screen* out) {

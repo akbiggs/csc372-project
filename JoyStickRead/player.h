@@ -12,11 +12,13 @@ typedef struct player {
     point* dir;
 
     int move_delay;
+    int alive;
 } player;
 
-player* create_player(point* start_pos);
+player* create_player(int start_x, int start_y);
+void reset_player(int start_x, int start_y, player* game_player);
 
-void update_player(input* in, player* game_player);
+void update_player(input* in, point* walls, int num_walls, player* game_player);
 void draw_player(player* game_player, screen* out);
 
 #endif
