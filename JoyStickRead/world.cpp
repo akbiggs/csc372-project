@@ -11,9 +11,12 @@ world* create_world(int width, int height) {
   result->width = width;
   result->height = height;
   result->game_player = create_player(0, 0);
+  result->pellet = create_collectible(0, 0, 50);
   result->walls = (point*)malloc(sizeof(point) * width * height);
 
   reset_world(result);
+
+  srand(0);
 
   return result;
 }
@@ -31,6 +34,8 @@ void reset_world(world* game_world) {
     add_wall(0, i, game_world);
     add_wall(game_world->width - 1, i, game_world);
   }
+
+  random_inbounds_pos(game_world, game_world->pellet->pos);
 }
 
 void add_wall(int x, int y, world* game_world) {
@@ -51,13 +56,30 @@ void remove_wall(int x, int y, world* game_world) {
 }
 
 void update_world(input* in, world* game_world) {
-  update_player(in, game_world->walls, game_world->num_walls,
+  collectible* pellet = game_world->pellet;
+
+  update_player(in, game_world->walls, game_world->num_walls, pellet,
           game_world->game_player);
+
+  if (pellet->used) {
+    random_inbounds_pos(game_world, pellet->pos);
+    pellet->used = false;
+  }
 }
 
-void random_inbounds_pos(world* world, point* pos) {
-  //pos->x = (rand() % world->width - 2) + 1;
-  //pos->y = (rand() % world->height - 2) + 1;
+bool inbounds(point* pos, world* game_world) {
+  return pos->x >= 0 && pos->x < game_world->width &&
+         pos->y >= 0 && pos->y < game_world->height &&
+         !contains_point(pos->x, pos->y, game_world->game_player->tail,
+                         game_world->game_player->tail_length) &&
+         !contains_point(pos->x, pos->y, game_world->walls, game_world->num_walls);
+}
+
+void random_inbounds_pos(world* game_world, point* pos) {
+  do {
+    pos->x = (rand() % game_world->width - 2) + 1;
+    pos->y = (rand() % game_world->height - 2) + 1;
+  } while (!inbounds(pos, game_world));
 }
 
 void draw_world(world* game_world, screen* out) {
@@ -73,4 +95,5 @@ void draw_world(world* game_world, screen* out) {
   }
 
   draw_player(game_world->game_player, out);
+  draw_collectible(game_world->pellet, out);
 }

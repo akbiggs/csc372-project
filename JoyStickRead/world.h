@@ -2,13 +2,14 @@
 #define WORLD_H
 
 #include "point.h"
+#include "collectible.h"
 #include "player.h"
 #include "input.h"
 
 typedef struct world {
   player* game_player;
 
-  point* pellet_pos;
+  collectible* pellet;
 
   point* walls;
   int num_walls;

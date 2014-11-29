@@ -59,7 +59,8 @@ void extend_tail(player* game_player) {
   game_player->tail_length++;
 }
 
-void update_player(input* in, point* walls, int num_walls, player* game_player) {
+void update_player(input* in, point* walls, int num_walls, collectible* pellet,
+        player* game_player) {
   if (!game_player->alive)
     return;
 
@@ -83,6 +84,10 @@ void update_player(input* in, point* walls, int num_walls, player* game_player) 
   if (contains_point(new_pos->x, new_pos->y, walls, num_walls) ||
       contains_point(new_pos->x, new_pos->y, game_player->tail, game_player->tail_length)) {
     game_player->alive = 0;
+  } else if (equals_point(new_pos->x, new_pos->y, *pellet->pos)) {
+    pellet->used = true;
+    if (game_player->tail_length < MAX_TAIL_LENGTH)
+      extend_tail(game_player);
   }
 }
 
