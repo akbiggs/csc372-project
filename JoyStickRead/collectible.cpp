@@ -13,7 +13,7 @@ collectible* create_collectible(int x, int y, int flash_delay) {
 void reset_collectible(int x, int y, int flash_delay, collectible* game_collectible) {
   set_point(x, y, game_collectible->pos);
 
-  game_collectible->flash_timer = 0;
+  game_collectible->flash_timer = -1;
   game_collectible->flash_delay = flash_delay;
 
   game_collectible->used = false;

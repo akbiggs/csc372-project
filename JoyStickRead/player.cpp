@@ -92,6 +92,8 @@ void update_player(input* in, point* walls, int num_walls, collectible* pellet,
       update_tail_to(game_player->pos->x, game_player->pos->y, game_player);
       add_point(game_player->pos, *game_player->dir);
 
+      pellet->flash_timer = -1;
+
       point* new_pos = game_player->pos;
       if (contains_point(new_pos->x, new_pos->y, walls, num_walls) ||
           contains_point(new_pos->x, new_pos->y, game_player->tail, game_player->tail_length)) {
