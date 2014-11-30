@@ -11,7 +11,7 @@ world* create_world(int width, int height) {
   result->width = width;
   result->height = height;
   result->game_player = create_player(0, 0);
-  result->pellet = create_collectible(0, 0, 50);
+  result->pellet = create_collectible(0, 0, 1);
   result->walls = (point*)malloc(sizeof(point) * width * height);
 
   reset_world(result);
@@ -60,10 +60,11 @@ void update_world(input* in, world* game_world) {
 
   update_player(in, game_world->walls, game_world->num_walls, pellet,
           game_world->game_player);
+  update_collectible(pellet);
 
   if (pellet->used) {
     random_inbounds_pos(game_world, pellet->pos);
-    pellet->used = false;
+    reset_collectible(pellet->pos->x, pellet->pos->y, 1, pellet);
   }
 }
 

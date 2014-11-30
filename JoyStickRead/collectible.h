@@ -6,6 +6,8 @@
 #include "point.h"
 #include "screen.h"
 
+#define FLASH_DELAY 300
+
 typedef struct collectible {
   point* pos;
   int flash_timer;

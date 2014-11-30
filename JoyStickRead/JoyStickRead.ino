@@ -32,7 +32,7 @@ void loop() {
   in->joyX = (UPPER_THRESHOLD + LOWER_THRESHOLD) / 2;
   in->joyY = (UPPER_THRESHOLD + LOWER_THRESHOLD) / 2;
 
-  delay(game_world->game_player->move_delay);
+  delay(FLASH_DELAY);
  
   // reads the value of the variable resistor
   in->joyX = analogRead(joyPinX);

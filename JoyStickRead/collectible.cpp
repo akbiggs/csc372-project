@@ -25,7 +25,7 @@ void update_collectible(collectible* game_collectible) {
 
 bool should_draw_collectible(collectible* game_collectible) {
   int delay = game_collectible->flash_delay;
-  return !game_collectible->used; //&& game_collectible->flash_timer % (delay * 2) <= delay;
+  return !game_collectible->used && game_collectible->flash_timer % (delay * 2) < delay;
 }
 
 void draw_collectible(collectible* game_collectible, screen* out) {

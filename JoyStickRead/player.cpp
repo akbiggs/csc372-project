@@ -22,6 +22,8 @@ void reset_player(int start_x, int start_y, player* game_player) {
 
   game_player->move_delay = START_MOVE_DELAY;
   game_player->alive = 1;
+  game_player->ticks_without_move = 0;
+  game_player->move_requested = false;
   game_player->tail_length = 0;
 }
 
@@ -59,35 +61,49 @@ void extend_tail(player* game_player) {
   game_player->tail_length++;
 }
 
+void request_move_direction(int x, int y, player* game_player) {
+    set_point(x, y, game_player->dir);
+    game_player->move_requested = true;
+}
+
 void update_player(input* in, point* walls, int num_walls, collectible* pellet,
         player* game_player) {
   if (!game_player->alive)
     return;
 
+  game_player->ticks_without_move++;
+
   if (moving_left(in)) {
-    set_point(-1, 0, game_player->dir);
+    request_move_direction(-1, 0, game_player);
   }
   else if (moving_right(in)) {
-    set_point(1, 0, game_player->dir);
+    request_move_direction(1, 0, game_player);
   }
   else if (moving_up(in)) {
-    set_point(0, -1, game_player->dir);
+    request_move_direction(0, -1, game_player);
   }
   else if (moving_down(in)) {
-    set_point(0, 1, game_player->dir);
+    request_move_direction(0, 1, game_player);
   }
 
-  update_tail_to(game_player->pos->x, game_player->pos->y, game_player);
-  add_point(game_player->pos, *game_player->dir);
 
-  point* new_pos = game_player->pos;
-  if (contains_point(new_pos->x, new_pos->y, walls, num_walls) ||
-      contains_point(new_pos->x, new_pos->y, game_player->tail, game_player->tail_length)) {
-    game_player->alive = 0;
-  } else if (equals_point(new_pos->x, new_pos->y, *pellet->pos)) {
-    pellet->used = true;
-    if (game_player->tail_length < MAX_TAIL_LENGTH)
-      extend_tail(game_player);
+  if (game_player->move_requested ||
+          game_player->ticks_without_move > game_player->move_delay / FLASH_DELAY) {
+      update_tail_to(game_player->pos->x, game_player->pos->y, game_player);
+      add_point(game_player->pos, *game_player->dir);
+
+      point* new_pos = game_player->pos;
+      if (contains_point(new_pos->x, new_pos->y, walls, num_walls) ||
+          contains_point(new_pos->x, new_pos->y, game_player->tail, game_player->tail_length)) {
+        game_player->alive = 0;
+      } else if (equals_point(new_pos->x, new_pos->y, *pellet->pos)) {
+        pellet->used = true;
+        if (game_player->tail_length < MAX_TAIL_LENGTH)
+          extend_tail(game_player);
+      }
+
+      game_player->move_requested = false;
+      game_player->ticks_without_move = 0;
   }
 }
 

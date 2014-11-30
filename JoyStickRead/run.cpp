@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "world.h"
+#include "collectible.h"
 #include "input.h"
 #include "screen.h"
 
@@ -22,7 +23,8 @@ void loop() {
   in->joyX = (UPPER_THRESHOLD + LOWER_THRESHOLD) / 2;
   in->joyY = (UPPER_THRESHOLD + LOWER_THRESHOLD) / 2;
 
-  timeout(game_world->game_player->move_delay);
+  timeout(FLASH_DELAY);
+
   switch (getch()) {
     case '\n':
         if (!game_world->game_player->alive) {

@@ -16,6 +16,9 @@ typedef struct player {
     point* tail;
     int tail_length;
 
+    int ticks_without_move;
+    bool move_requested;
+
     int move_delay;
     int alive;
 } player;
