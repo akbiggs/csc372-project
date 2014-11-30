@@ -1,3 +1,5 @@
+#define ARDUINO_H
+
 #include <stdlib.h>
 
 #include <Wire.h>
@@ -22,7 +24,8 @@ void setup() {
   pinMode(ledPin, OUTPUT);
   Serial.begin(9600);
   matrix.begin(0x70);
-  
+  matrix.blinkRate(2);
+
   in = create_input();
   game_screen = create_screen(8, 8);
   game_world = create_world(game_screen->width, game_screen->height);

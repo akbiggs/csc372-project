@@ -1,3 +1,5 @@
+#ifndef ARDUINO_H
+
 #include <stdio.h>
 #include <ncurses.h>
 #include <stdlib.h>
@@ -74,3 +76,5 @@ int main() {
         loop();
     }
 }
+
+#endif // ARDUINO_H
