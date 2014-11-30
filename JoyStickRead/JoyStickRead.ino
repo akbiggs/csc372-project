@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include <Wire.h>
+#include <Adafruit_NFCShield_I2C.h>
 #include "Adafruit_LEDBackpack.h"
 #include "Adafruit_GFX.h"
 
@@ -15,8 +16,16 @@ int joyPinY = 0;                 // slider variable connecetd to analog pin 1
 static world* game_world;
 static input* in;
 static screen* game_screen;
+int start = 0;
 
 Adafruit_8x8matrix matrix = Adafruit_8x8matrix();
+
+#define IRQ   (2)
+#define RESET (3)  // Not connected by default on the NFC Shield
+
+int incomingByte = 0;
+
+Adafruit_NFCShield_I2C nfc(IRQ, RESET);
 
 void setup() {
   pinMode(ledPin, OUTPUT);
@@ -26,9 +35,32 @@ void setup() {
   in = create_input();
   game_screen = create_screen(8, 8);
   game_world = create_world(game_screen->width, game_screen->height);
+  
+  nfc.begin();
+
+  uint32_t versiondata = nfc.getFirmwareVersion();
+  if (! versiondata) {
+    Serial.print("Didn't find PN53x board, please try again.");
+    while (1); // halt
+  }
+  
+  nfc.SAMConfig();
+  
+  Serial.println("Waiting for an ISO14443A Card ...");
 }
 
 void loop() {
+  uint8_t success;
+  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
+  uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
+    
+  // Wait for an ISO14443A type cards (Mifare, etc.).  When one is found
+  // 'uid' will be populated with the UID, and uidLength will indicate
+  // if the uid is 4 bytes (Mifare Classic) or 7 bytes (Mifare Ultralight)
+  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength); 
+  
+  Serial.println(success);
+  
   in->joyX = (UPPER_THRESHOLD + LOWER_THRESHOLD) / 2;
   in->joyY = (UPPER_THRESHOLD + LOWER_THRESHOLD) / 2;
 
@@ -65,4 +97,4 @@ void loop() {
   matrix.writeDisplay();
   
 //  delay(300);
-}
+} 

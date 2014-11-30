@@ -6,7 +6,7 @@
 #include "point.h"
 #include "screen.h"
 
-#define FLASH_DELAY 300
+#define FLASH_DELAY 400
 
 typedef struct collectible {
   point* pos;

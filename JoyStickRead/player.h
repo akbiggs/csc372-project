@@ -6,7 +6,7 @@
 #include "input.h"
 #include "screen.h"
 
-#define START_MOVE_DELAY 1200
+#define START_MOVE_DELAY 900
 #define MAX_TAIL_LENGTH 10
 
 typedef struct player {
